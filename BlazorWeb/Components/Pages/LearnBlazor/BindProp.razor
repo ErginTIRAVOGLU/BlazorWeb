@@ -1,19 +1,120 @@
 ﻿@page "/learnBlazor/bindProp"
+<div class="row">
+    <div class="col-6 border p-3">
+         <h3 class="text-primary">Product Playground</h3>
+        <hr />
+        Is Active : @(Product.IsActive ? "Yes" : "No") <br />
+        Price : @Product.Price <br />
+        Input Price : <input type="number" @bind="@Product.Price" @bind:event="oninput" />
+        <p>Live Price: @Product.Price</p>
+        <input type="number" @bind-value="Product.Price" @bind-value:event="oninput" /> <br />
+        Active s (okur/yazar - bind) : <input type="checkbox" @bind="Product.IsActive" /> <br />
+        Active (yazar): <input type="checkbox" @bind-value="Product.IsActive" /> <br />
+        Active s (okur/yazar) : <input type="checkbox" @bind-value="Product.IsActive"
+            checked="@(Product.IsActive ? "checked" : null)" /> <br />
 
-<h3>Product - Data Binding</h3>
+        Product Properties:
+        <select @bind="selectedProp">
+            @foreach (var prop in Product.ProductProperties)
+            {
+                <option value="@prop.Key">@prop.Key</option>
+            }
+        </select>
+    </div>
+    <div class="col-6 border p-3">
+        <h3 class="text-primary">Product Summary</h3>
+        <hr />
+        Name : @Product.Name <br />
+        <br />
+        Selected Property: @selectedProp
+        <br />
+        @if (!string.IsNullOrEmpty(selectedProp))
+        {
+            <p>Selected Value: @Product.ProductProperties.FirstOrDefault(p => p.Key == selectedProp)?.Value</p>
+        }
+    </div>
+    <div class="col-12 p-4">
+        <h2 class="text-success">Product Table</h2>
+        <table class="table table-stripped">
+            <thead>
+                <tr>
+                    <td>Id</td>
+                    <td>Name</td>
+                    <td>Price</td>
+                    <td>Is Active</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Products)
+                {
+                    <tr>
+                        <td><input type="text" @bind="item.Id" @bind:event="oninput" /></td>
+                        <td><input type="text" @bind="item.Name" @bind:event="oninput" /></td>
+                        <td><input type="number" @bind="item.Price" @bind:event="oninput" /></td>
+                        <td><input type="checkbox" @bind="item.IsActive" /></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
-Name : @Product.Name <br />
-Is Active : @(Product.IsActive ? "Yes" : "No") <br />
-Price : @Product.Price <br />
-Input Price : <input type="number" @bind="@Product.Price" @bind:event="oninput" />
-<p>Live Price: @Product.Price</p>
-<input type="number" @bind-value="Product.Price" @bind-value:event="oninput" />
+        <br /><br />
+        <h3 class="text-primary">Products Data</h3>
+        @foreach (var item in Products)
+        {
+            <div class="border p-2 mb-2">
+                Id: @item.Id <br />
+                Name: @item.Name <br />
+                Price: @item.Price <br />
+                Is Active: @(item.IsActive ? "Yes" : "No") <br />
+            </div>
+        }
+    </div>
+</div>
+
 @code {
-    Models.Product Product = new ()
+    private string selectedProp = "";
+    Product Product = new()
     {
         Id = 1,
         Name = "Sample Product",
         IsActive = true,
-        Price= 9 
+        Price = 9,
+        ProductProperties = new List<Models.Product_Prop>
+        {
+        new Models.Product_Prop{ Id=1, Key="Color", Value="Red"},
+        new Models.Product_Prop{ Id=2, Key="Size", Value="Medium"},
+        new Models.Product_Prop{ Id=3, Key="Flavor", Value="Rose"}
+        }
     };
+
+    List<Product> Products = new ();
+
+    protected override void OnInitialized()
+    {
+        Products.Add(new()
+            {
+                Id = 1,
+                Name = "Midnight Blaze",
+                IsActive = false,
+                ProductProperties = new List<Product_Prop>()
+                {
+                    new Product_Prop { Id = 1, Key = "Flavor", Value = "Rose"},
+                    new Product_Prop { Id = 2, Key = "Size", Value = "20oz"},
+                    new Product_Prop { Id = 3, Key = "Color", Value="Purple" }
+                }
+            });
+
+        Products.Add(new()
+        {
+            Id = 2,
+            Name = "Blossom Lily",
+            IsActive = true,
+            ProductProperties = new List<Product_Prop>() 
+            {
+                new Product_Prop { Id = 1, Key = "Flavor", Value = "Lily" },
+                new Product_Prop { Id = 2, Key = "Size", Value = "18oz" },
+                new Product_Prop {Id = 3,Key = "Color",Value = "White"}
+            }
+        });
+    }
 }
