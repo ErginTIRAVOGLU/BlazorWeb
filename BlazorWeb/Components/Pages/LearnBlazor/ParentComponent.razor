@@ -1,0 +1,32 @@
+﻿@page "/learnBlazor/parentComponent"
+@using BlazorWeb.Components.Pages.LearnBlazor.LearnBlazorComponents
+
+<h3>ParentComponent</h3>
+<CascadingValue  Value="@TitleFromParent">
+<_ChildComponent OnButtonClick="ShowMessage" Title="This is a title from the parent 1 component"  MessageForGrandChild="Hello from Parent Component!" >
+    <ChildSomeContent>
+        <div>
+            first 50%
+        </div>
+        <p>This is the child content from the parent component.</p>
+        <p>You can put any valid Blazor content here, including HTML elements, other components, and data bindings.</p>
+        </ChildSomeContent>
+    <ChildContent>
+        <div>
+            extra content in another ChildContent
+        </div>
+    </ChildContent>
+</_ChildComponent>
+</CascadingValue>
+<p>@messageText</p>
+
+
+@code {
+    public string messageText="";
+
+    private void ShowMessage()
+    {
+        messageText = "Button inside child component was clicked!";
+    }
+    private string TitleFromParent = "This is a title from the Parent Component via Cascading Parameter";
+}
