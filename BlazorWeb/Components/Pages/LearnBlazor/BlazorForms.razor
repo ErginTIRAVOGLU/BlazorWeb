@@ -1,0 +1,92 @@
+﻿@page "/blazor-forms"
+<div class="col-12 offset-md-2 col-md-8 border">
+    <div class="text-center pt-4">
+        <h2 class="text-success">Product Form</h2>
+        <hr />
+    </div>
+    <div class="mx-2 px-2">
+        <EditForm FormName="ProductCreate" Model="productModel" OnValidSubmit="HandleValidSubmit"
+            OnInvalidSubmit="HandleValidSubmitInvalid">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group py-2">
+                Product Name
+                <InputText class="form-control" @bind-Value="productModel.Name" />
+                <ValidationMessage For="@(() => productModel.Name)" />
+            </div>
+            <div class="form-group py-2">
+                Product Price
+                <InputNumber class="form-control" @bind-Value="productModel.Price" />
+            </div>
+             <div class="form-group py-2">
+                Category
+                <InputSelect class="form-control" @bind-Value="productModel.Category">
+                    <option value="">-- Select Category --</option>
+                    @foreach (var category in Enum.GetValues(typeof(Category)))
+                    {
+                        <option value="@category">@category</option>
+                    }
+                </InputSelect>
+            </div>
+               <div class="form-group py-2">
+                IsActive
+                <InputCheckbox class="form-check-input" @bind-Value="productModel.IsActive" />
+         
+            </div>
+              <div class="form-group py-2">
+                Available After
+               <InputDate class="form-control" @bind-Value="productModel.AvailableAfter" />
+         
+            </div>
+            <button type="submit" class="btn btn-primary my-3">Submit</button>
+            <p class="text-info">@((IsProcessing) ? "Processing..." : "")</p>
+        </EditForm>
+
+    </div>
+    @if(createdProduct != null)
+    {
+    <div class="mx-2 px-2 border-top pt-4">
+        <h4 class="text-success">Created Product Details</h4>
+        <p><strong>Name:</strong> @createdProduct.Name</p>
+        <p><strong>Price:</strong> @createdProduct.Price</p>
+        <p><strong>IsActive:</strong> @(createdProduct.IsActive ? "Yes" : "No")</p>
+        <p><strong>Category:</strong> @createdProduct.Category</p>
+        <p><strong>Available After:</strong> @createdProduct.AvailableAfter</p>
+    </div>
+    }
+</div>
+
+@code {
+    
+    public Product productModel = new Product(){
+        Name="",
+        Price=0,
+        IsActive=true,
+        Category=Category.Electronics,
+        AvailableAfter=DateOnly.FromDateTime(DateTime.Now)
+    };
+
+    private Product? createdProduct { get; set; }
+    private bool IsProcessing = false;
+
+    private async Task HandleValidSubmit()
+    {
+        IsProcessing = true;
+        createdProduct = productModel;
+        productModel = new Product(){
+            Name="",
+            Price=0,
+            IsActive=true,
+            Category=Category.Electronics,
+            AvailableAfter=DateOnly.FromDateTime(DateTime.Now)
+        };
+        await Task.Delay(2000);
+        IsProcessing = false;
+    }
+    private async Task HandleValidSubmitInvalid()
+    {
+        IsProcessing = true;
+        await Task.Delay(2000);
+        IsProcessing = false;
+    }
+}
