@@ -1,6 +1,57 @@
 ﻿@page "/blazorJs"
+@using BlazorWeb.Helper
+@inject IJSRuntime JSRuntime
+
 <h3>BlazorJs</h3>
+<div class="row">
+    <button class="btn btn-secondary" @onclick="TestConfirmBox">Test Confirm Button</button>
+</div>
+<div class="row mt-3">
+    @if(ConfirmResult)
+    {
+        <div class="row mt-3">
+            <p>Confirm Result: @ConfirmResult</p>
+        </div>
+    } 
+</div>
 
-@code {
+<div class="row">
+    <button class="btn btn-success m-2" style="width: 200px;" @onclick="ToastrSuccess">Show Success Toastr</button>
+    <button class="btn btn-danger m-2" style="width: 200px;" @onclick="ToastrDanger">Show Danger Toastr</button>
+</div>
 
+<div class="row">
+    <button class="btn btn-success m-2" style="width: 200px;" @onclick="SweetalertSuccess">Sweetalert Success</button>
+    <button class="btn btn-danger m-2" style="width: 200px;" @onclick="SweetalertError">Sweetalert Failure</button>
+</div>
+
+@code { 
+    private string ConfirmMessage = "Are you sure you want to proceed?";
+    private bool ConfirmResult { get; set; }
+
+    private async Task TestConfirmBox()
+    {
+        ConfirmResult = await JSRuntime.InvokeAsync<bool>("confirm", ConfirmMessage);
+    }
+
+    private async Task ToastrSuccess()
+    {
+        //await JSRuntime.InvokeVoidAsync("showToastr", "success", "This is a success message!", "Success");
+        await JSRuntime.ToastrSuccess("This is a success message!", "Success");
+    }
+
+    private async Task ToastrDanger()
+    {
+        //await JSRuntime.InvokeVoidAsync("showToastr", "error", "This is a danger message!", "Danger");
+        await JSRuntime.ToastrDanger("This is a danger message!", "Danger");
+    }
+
+    private async Task SweetalertSuccess()
+    {
+        await JSRuntime.SweetalertSuccess("Operation Successful", "The operation was completed successfully.");
+    }
+    private async Task SweetalertError()
+    {
+        await JSRuntime.SweetalertError("Operation Failed", "There was an error completing the operation.");
+    }
 }

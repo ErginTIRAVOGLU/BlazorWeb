@@ -1,0 +1,20 @@
+﻿<h3>_LifeCycleChildComponent</h3>
+
+@foreach (var eventType in EventTypes)
+{
+    <p>@eventType executed.</p>
+}
+@code {
+    [Parameter]
+    public int CountValue { get; set; }
+
+    List<string> EventTypes = new List<string>();
+    protected override void OnInitialized()
+    {
+        EventTypes.Add("OnInitialized from child");
+    }
+    protected override void OnParametersSet()
+    {
+        EventTypes.Add("OnParametersSet from child");
+    }
+}

@@ -1,4 +1,7 @@
-﻿<div>
+﻿@using BlazorWeb.Helper
+@inject IJSRuntime _JSRuntime
+
+<div>
     <div class="alert alert-info">
         @Title
     </div>
@@ -36,5 +39,8 @@
     [Parameter]
     public string MessageForGrandChild { get; set; }
 
-
+    public async Task ShowSuccessToastr()
+    {
+        await _JSRuntime.ToastrSuccess("Button clicked in Child Component!", "Child Component");
+    }
 }
